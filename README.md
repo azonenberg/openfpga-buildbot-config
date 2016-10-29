@@ -2,6 +2,7 @@
 
 To provision a VM from scratch:
 
+  * Install Debian jessie amd64.
   * Configure `hosts.cfg`;
   * Configure `vars/secrets.yml` (see `vars/secrets.yml.sample`);
   * Run `ansible-playbook buildserver.yaml`.
