@@ -1,0 +1,34 @@
+- name: install buildmaster
+  apt: name=buildbot state=present
+- name: install txgithub
+  pip: name=txgithub
+- name: configure buildmaster startup
+  copy: dest=/etc/default/buildmaster src=templates/etc/default/buildmaster
+  notify:
+  - restart buildmaster
+- name: create buildmaster base directory
+  file: name=/var/buildbot/master state=directory recurse=yes
+    owner=buildbot group=buildbot
+  register: basedir
+- name: initialize buildmaster configuration
+  command: buildbot create-master /var/buildbot/master
+  when: basedir.changed
+  become: true
+  become_user: buildbot
+  # needed for some reason even right after creation
+- name: upgrade buildmaster configuration
+  command: buildbot upgrade-master /var/buildbot/master
+  when: basedir.changed
+  become: true
+  become_user: buildbot
+- name: configure buildmaster secrets
+  template: dest=/var/buildbot/master/secrets.json src=templates/var/buildbot/master/secrets.json
+    owner=buildbot group=buildbot mode=0600
+  notify:
+  - restart buildmaster
+- name: configure buildmaster
+  copy: dest=/var/buildbot/master/master.cfg src=templates/var/buildbot/master/master.cfg
+    owner=buildbot group=buildbot
+  tags: buildmaster-config
+  notify:
+  - restart buildmaster

@@ -1,0 +1,16 @@
+- name: install buildslave
+  apt: name=buildbot state=present
+- name: configure buildslave startup
+  template: dest=/etc/default/buildslave src=templates/etc/default/buildslave
+  notify:
+  - restart buildslave
+- name: create buildslave base directory
+  file: name=/var/buildbot/slave-{{name}} state=directory recurse=yes
+    owner=buildbot group=buildbot
+  register: basedir
+- name: initialize buildslave configuration
+  command: buildslave create-slave /var/buildbot/slave-{{name}} localhost {{name}}
+    {{buildbot_slave_password}}
+  when: basedir.changed
+  become: true
+  become_user: buildbot

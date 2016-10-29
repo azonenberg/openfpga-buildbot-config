@@ -1,0 +1,24 @@
+---
+- hosts: lucifer.dmz.bainbridge.antikernel.net
+  remote_user: root
+  vars:
+    live: True
+  vars_files:
+  - vars/secrets.yml
+  tasks:
+  - include: tasks/apt.yml
+    tags: apt
+  - include: tasks/system.yml
+    tags: system
+  - include: tasks/buildmaster.yml
+    tags: buildmaster
+  - include: tasks/buildslave.yml name=debian-jessie-amd64
+    tags: buildslave
+  - include: tasks/nginx.yml
+    tags: nginx
+  - include: tasks/nginx-site.yml name=openfpga-dashboard.antikernel.net
+    tags: dashboard
+  handlers:
+  - include: handlers/buildmaster.yml
+  - include: handlers/buildslave.yml
+  - include: handlers/nginx.yml

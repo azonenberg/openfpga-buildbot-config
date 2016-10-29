@@ -1,0 +1,40 @@
+- name: switch to sysvinit
+  apt: name=sysvinit-core state=present
+  register: sysvinit
+- name: reboot
+  # ugh, systemd doesn't cleanly drop ssh connections on reboot
+  local_action: shell ssh -o ServerAliveInterval=3
+    root@{{inventory_hostname}} reboot
+  ignore_errors: true
+  when: sysvinit.changed
+- name: wait for restart
+  local_action: wait_for port=22 host={{inventory_hostname}} search_regex=OpenSSH delay=10
+  when: sysvinit.changed
+- name: remove useless getty's
+  lineinfile: name=/etc/inittab regexp="tty[23456]" state=absent
+- name: remove useless Debian defaults
+  apt: name={{item}} state=absent purge=yes autoremove=yes
+  with_items:
+    - acpi
+    - acpid
+    - acpi-support-base
+    - exim4
+    - exim4-base
+    - exim4-config
+    - exim4-daemon-light
+    - mutt
+    - procmail
+    - rpcbind
+    - dbus
+    - systemd
+- name: set timezone to UTC
+  copy: dest=/etc/timezone content=Etc/UTC
+  register: set_timezone
+- name: reconfigure tzdata
+  command: dpkg-reconfigure -f noninteractive tzdata
+  when: set_timezone.changed
+- name: install useful defaults
+  apt: name={{item}} state=present
+  with_items:
+    - ntp
+    - sudo

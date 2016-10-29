@@ -1,0 +1,8 @@
+MASTER_RUNNER=/usr/bin/buildbot
+
+MASTER_ENABLED[1]=1
+MASTER_NAME[1]="buildmaster"
+MASTER_USER[1]="buildbot"
+MASTER_BASEDIR[1]="/var/buildbot/master"
+MASTER_OPTIONS[1]=""
+MASTER_PREFIXCMD[1]=""
