@@ -15,6 +15,8 @@ server {
   root /var/www/{{name}}/public;
   location / {
     proxy_set_header Host $http_host;
+    proxy_buffering    off;
+    proxy_read_timeout 3600s;
     if (!-f $request_filename) {
       proxy_pass http://buildbot;
     }
