@@ -1,0 +1,19 @@
+- name: install LLVM APT key
+  apt_key: id=15CF4D18AF4F7421 url=http://apt.llvm.org/llvm-snapshot.gpg.key
+- name: add LLVM APT repository
+  copy: dest=/etc/apt/sources.list.d/llvm-toolchain-trusty-3.8.conf
+    content="deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.8 main"
+- name: update APT cache
+  apt: update_cache=yes
+- name: install openfpga dependencies
+  apt: name={{item}} state=present
+  with_items:
+    - clang-3.8
+    - cmake
+    - libjson-c-dev
+    - libusb-1.0-0-dev
+    - cppcheck
+    - texlive-latex-base
+    - texlive-latex-extra
+    - texlive-fonts-recommended
+    - texlive-fonts-extra
