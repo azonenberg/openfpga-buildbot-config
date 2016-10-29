@@ -1,5 +1,5 @@
 - name: set hostname
-  hostname: name=openfpga-buildbot
+  hostname: name={{hostname}}
 - name: switch to sysvinit
   apt: name=sysvinit-core state=present
   register: sysvinit
