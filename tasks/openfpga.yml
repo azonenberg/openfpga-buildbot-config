@@ -13,6 +13,7 @@
     - libjson-c-dev
     - libusb-1.0-0-dev
     - libhidapi-dev
+    - libudev-dev
     - cppcheck
     - texlive-latex-base
     - texlive-latex-extra
