@@ -12,7 +12,7 @@
     tags: system
   - include: tasks/buildmaster.yml
     tags: buildmaster
-  - include: tasks/buildslave.yml name=debian-jessie-amd64
+  - include: tasks/buildslave.yml name=debian-stretch-amd64
     tags: buildslave
   - include: tasks/openfpga.yml
     tags: openfpga
